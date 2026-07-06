@@ -1,0 +1,46 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="card" style="border-left:4px solid var(--gold)">
+  <strong>Add staff member</strong>
+  <form method="post" action="{% url 'staff_create' %}">{% csrf_token %}
+    <div class="grid2">
+      <div><label>Username</label>{{ form.username }}</div>
+      <div><label>Password</label>{{ form.password }}</div>
+      <div><label>Role</label>{{ form.role }}</div>
+    </div>
+    <div style="margin-top:14px">
+      <button class="btn" type="submit">Save staff member</button>
+    </div>
+  </form>
+  <p class="muted" style="margin-top:10px">
+    Cashier: dashboard and sales only. Shopkeeper: also insights and inventory.
+    Saving an existing username resets their password and role.
+  </p>
+</div>
+
+<div class="divider"><div class="line"></div><span class="title">Team</span><div class="line"></div></div>
+<div class="card">
+  {% for s in staff %}
+  <div class="row">
+    <div>
+      <div style="font-weight:600;font-size:15px">
+        {{ s.user.username }}
+        {% if not s.user.is_active %}<span class="pill low">deactivated</span>{% endif %}
+        {% if s.user == user %}<span class="pill">you</span>{% endif %}
+      </div>
+      <div class="muted">{{ s.role }}{% if s.user.last_login %} · last sign-in {{ s.user.last_login|date:"j M H:i" }}{% endif %}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="pill">{{ s.role }}</span>
+      {% if not s.user.is_superuser and s.user != user %}
+      <form method="post" action="{% url 'staff_toggle' s.user.pk %}" style="display:inline">{% csrf_token %}
+        <button class="{% if s.user.is_active %}btn-danger{% else %}btn-small{% endif %}">
+          {% if s.user.is_active %}Deactivate{% else %}Activate{% endif %}
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

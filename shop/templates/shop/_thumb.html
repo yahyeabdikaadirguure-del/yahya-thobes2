@@ -1,0 +1,5 @@
+{% if product.image %}
+  <img class="thumb" src="{{ product.image.url }}" alt="{{ product.name }}">
+{% else %}
+  <span class="thumb-ph"><svg width="34" height="34" viewBox="0 0 48 48"><path d="M19 7l5 5 5-5 7 4 2 9-5 1v20H15V21l-5-1 2-9z" fill="none" stroke="#0E5C4A" stroke-width="2" stroke-linejoin="round"/><path d="M24 12v8" stroke="#C9A227" stroke-width="2"/></svg></span>
+{% endif %}

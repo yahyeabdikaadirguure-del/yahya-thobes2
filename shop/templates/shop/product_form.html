@@ -1,0 +1,26 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="card" style="border-left:4px solid var(--gold)">
+  <strong>{{ title }}</strong>
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>Name</label>{{ form.name }}{{ form.name.errors }}
+    <div class="grid2">
+      <div><label>Category</label>{{ form.category }}</div>
+      <div><label>Size</label>{{ form.size }}</div>
+      <div><label>Price (KSh)</label>{{ form.price }}{{ form.price.errors }}</div>
+      <div><label>Stock quantity</label>{{ form.stock }}{{ form.stock.errors }}</div>
+      <div><label>Alert when stock ≤</label>{{ form.low_at }}</div>
+    </div>
+    <label>Photo</label>
+    {% if form.instance.image %}
+      <div style="margin-bottom:8px"><img class="thumb" style="width:64px;height:64px" src="{{ form.instance.image.url }}" alt="Current photo"></div>
+    {% endif %}
+    {{ form.image }}{{ form.image.errors }}
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button class="btn" type="submit">Save product</button>
+      <a class="btn-ghost" href="{% url 'inventory' %}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

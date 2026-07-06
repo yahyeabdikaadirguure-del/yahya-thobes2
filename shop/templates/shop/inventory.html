@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<form method="get" style="display:flex;gap:10px;margin-bottom:14px">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search products…" style="flex:1">
+  <button class="btn-ghost" type="submit">Search</button>
+  <a class="btn" href="{% url 'product_create' %}">+ Add product</a>
+</form>
+
+<div class="card">
+  {% for p in products %}
+  <div class="row">
+    <div style="display:flex;align-items:center;gap:12px;min-width:0">
+      {% include "shop/_thumb.html" with product=p %}
+      <div style="min-width:0">
+        <div style="font-weight:600;font-size:15px">{{ p.name }} {% if p.size != "-" %}<span class="muted" style="font-size:15px;font-weight:400">({{ p.size }})</span>{% endif %}</div>
+        <div class="muted">{{ p.category }} · KSh {{ p.price|floatformat:0 }}</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="pill {% if p.is_low %}low{% endif %}">{{ p.stock }} in stock</span>
+      <a class="btn-small" href="{% url 'product_edit' p.pk %}">Edit</a>
+      {% if is_admin %}<form method="post" action="{% url 'product_delete' p.pk %}" style="display:inline">{% csrf_token %}
+        <button class="btn-danger" onclick="return confirm('Delete {{ p }}?')">Delete</button>
+      </form>{% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty">
+    {% if query %}No products match your search.{% else %}Your inventory is empty. Add your first product to get started.{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

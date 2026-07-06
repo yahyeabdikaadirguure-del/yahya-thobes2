@@ -1,0 +1,18 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="card" style="max-width:420px;margin:30px auto;border-left:4px solid var(--gold)">
+  <strong style="font-size:16px">Sign in to your shop</strong>
+  {% if form.errors %}
+    <p style="color:var(--danger);font-size:14px">Wrong username or password. Try again.</p>
+  {% endif %}
+  <form method="post">{% csrf_token %}
+    <label>Username</label>
+    <input type="text" name="username" class="input" autofocus required>
+    <label>Password</label>
+    <input type="password" name="password" class="input" required>
+    <div style="margin-top:16px">
+      <button class="btn" type="submit">Sign in</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

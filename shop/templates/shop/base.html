@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yahya Thobes</title>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --emerald:#0E5C4A; --emerald-dark:#0A4438; --sand:#F6F1E7; --card:#fff;
+  --gold:#C9A227; --ink:#22302B; --muted:#6E7D76; --line:#E3DCCB; --danger:#B4432F;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Work Sans',system-ui,sans-serif;background:var(--sand);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--emerald-dark),var(--emerald));color:#fff;padding:20px 16px 0}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-family:'Marcellus',Georgia,serif;font-size:26px;letter-spacing:.5px;margin:0;display:flex;align-items:center;gap:10px}
+.sub{color:#CFE3DB;font-size:13px;margin:4px 0 14px}
+nav{display:flex;gap:4px;max-width:860px;margin:0 auto}
+nav a{flex:1;text-align:center;padding:10px 8px;color:#DCEAE4;text-decoration:none;font-weight:600;font-size:14px;border-radius:10px 10px 0 0}
+nav a.active{background:var(--sand);color:var(--emerald-dark)}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.stat-val{font-family:'Marcellus',Georgia,serif;font-size:24px;color:var(--emerald-dark)}
+.trend-up{color:var(--emerald);font-size:12px;font-weight:700}
+.trend-down{color:var(--danger);font-size:12px;font-weight:700}
+.input, input[type=text],input[type=number],select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
+.input:focus{outline:2px solid var(--gold);outline-offset:1px}
+label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin:10px 0 4px}
+.btn{background:var(--emerald);color:#fff;border:none;padding:11px 18px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.btn-ghost{background:transparent;color:var(--emerald);border:1px solid var(--emerald);padding:10px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.btn-small{background:none;border:none;color:var(--emerald);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;text-decoration:none;padding:4px 6px}
+.btn-danger{background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;padding:4px 6px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#E4F0EB;color:var(--emerald-dark)}
+.pill.low{background:#F9E4DF;color:var(--danger)}
+.muted{color:var(--muted);font-size:12px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.divider .line{flex:1;height:1px;background:var(--line)}
+.divider .title{font-family:'Marcellus',Georgia,serif;font-size:18px;color:var(--emerald-dark)}
+.thumb{width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex-shrink:0}
+.thumb-ph{width:52px;height:52px;border-radius:8px;background:#EFE8D8;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.messages{list-style:none;padding:0;margin:0 0 14px}
+.messages li{background:#E4F0EB;border:1px solid var(--emerald);border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 1l2.2 5.3L19 3.9l-2.4 5L22 12l-5.4 3.1L19 20.1l-4.8-2.4L12 23l-2.2-5.3L5 20.1l2.4-5L2 12l5.4-3.1L5 3.9l4.8 2.4z" fill="#C9A227"/></svg> Yahya Thobes</h1>
+    <p class="sub">Arabic &amp; Islamic clothing{% if user.is_authenticated %} · {{ user.username }}
+      <form method="post" action="{% url 'logout' %}" style="display:inline">{% csrf_token %}
+        <button type="submit" style="background:none;border:none;color:#CFE3DB;text-decoration:underline;cursor:pointer;font-size:13px;font-family:inherit;padding:0">Sign out</button>
+      </form>{% endif %}</p>
+  </div>
+  <nav>
+    <a href="{% url 'dashboard' %}" class="{% if tab == 'dashboard' %}active{% endif %}">Dashboard</a>
+    {% if is_shopkeeper %}<a href="{% url 'insights' %}" class="{% if tab == 'insights' %}active{% endif %}">Insights</a>{% endif %}
+    <a href="{% url 'record_sale' %}" class="{% if tab == 'sale' %}active{% endif %}">Record sale</a>
+    {% if is_shopkeeper %}<a href="{% url 'inventory' %}" class="{% if tab == 'inventory' %}active{% endif %}">Inventory</a>{% endif %}
+    {% if is_admin %}<a href="{% url 'staff_list' %}" class="{% if tab == 'staff' %}active{% endif %}">Staff</a>{% endif %}
+  </nav>
+</header>
+<main>
+  {% if messages %}<ul class="messages">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

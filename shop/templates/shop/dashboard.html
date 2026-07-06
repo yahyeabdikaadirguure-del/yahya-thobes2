@@ -1,0 +1,39 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="stats">
+  <div class="card"><div class="stat-label">Today</div><div class="stat-val">KSh {{ today_total|floatformat:0 }}</div><div class="muted">{{ today_count }} sale{{ today_count|pluralize }}</div></div>
+  <div class="card"><div class="stat-label">This week</div><div class="stat-val">KSh {{ week_total|floatformat:0 }}</div></div>
+  <div class="card"><div class="stat-label">This month</div><div class="stat-val">KSh {{ month_total|floatformat:0 }}</div></div>
+  <div class="card"><div class="stat-label">Stock value</div><div class="stat-val">KSh {{ stock_value|floatformat:0 }}</div><div class="muted">{{ product_count }} product line{{ product_count|pluralize }}</div></div>
+</div>
+
+{% if low_stock %}
+<div class="card" style="border-left:4px solid var(--danger)">
+  <strong style="font-size:14px">Restock soon</strong>
+  {% for p in low_stock %}
+  <div class="row"><span>{{ p }}</span><span class="pill low">{{ p.stock }} left</span></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="divider"><div class="line"></div><span class="title">Recent sales</span><div class="line"></div></div>
+<div class="card">
+  {% for s in recent_sales %}
+  <div class="row">
+    <div>
+      <div style="font-weight:600;font-size:14px">{{ s.name_snapshot }} × {{ s.qty }}</div>
+      <div class="muted">{{ s.created_at|date:"j M" }} · {{ s.created_at|time:"H:i" }}{% if s.sold_by %} · by {{ s.sold_by.username }}{% endif %}{% if s.note %} · {{ s.note }}{% endif %}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-weight:700;color:var(--emerald-dark)">KSh {{ s.total|floatformat:0 }}</div>
+      {% if is_shopkeeper %}<form method="post" action="{% url 'undo_sale' s.pk %}" style="display:inline">{% csrf_token %}
+        <input type="hidden" name="next" value="dashboard">
+        <button class="btn-danger" onclick="return confirm('Undo this sale and restore stock?')">Undo</button>
+      </form>{% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty">No sales yet. Record your first sale from the "Record sale" tab.</div>
+  {% endfor %}
+</div>
+{% endblock %}

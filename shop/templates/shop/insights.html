@@ -1,0 +1,69 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="stats">
+  <div class="card">
+    <div class="stat-label">Weekly sales (7 days)</div>
+    <div class="stat-val">KSh {{ week_total|floatformat:0 }}</div>
+    {% if week_trend is not None %}
+      <span class="{% if week_trend >= 0 %}trend-up{% else %}trend-down{% endif %}">
+        {% if week_trend >= 0 %}&#9650;{% else %}&#9660;{% endif %} {{ week_trend }}% vs previous week
+      </span>
+    {% endif %}
+  </div>
+  <div class="card">
+    <div class="stat-label">Monthly sales (30 days)</div>
+    <div class="stat-val">KSh {{ month_total|floatformat:0 }}</div>
+    {% if month_trend is not None %}
+      <span class="{% if month_trend >= 0 %}trend-up{% else %}trend-down{% endif %}">
+        {% if month_trend >= 0 %}&#9650;{% else %}&#9660;{% endif %} {{ month_trend }}% vs previous month
+      </span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="divider"><div class="line"></div><span class="title">Daily sales, last 7 days</span><div class="line"></div></div>
+<div class="card"><canvas id="dailyChart" height="120"></canvas></div>
+
+<div class="divider"><div class="line"></div><span class="title">Weekly totals, last 4 weeks</span><div class="line"></div></div>
+<div class="card"><canvas id="weeklyChart" height="120"></canvas></div>
+
+<div class="divider"><div class="line"></div><span class="title">Top sellers, last 30 days</span><div class="line"></div></div>
+<div class="card">
+  {% for t in top_sellers %}
+  <div class="row">
+    <div><div style="font-weight:600;font-size:14px">{{ forloop.counter }}. {{ t.name_snapshot }}</div>
+    <div class="muted">{{ t.units }} sold</div></div>
+    <strong style="color:var(--emerald-dark)">KSh {{ t.revenue|floatformat:0 }}</strong>
+  </div>
+  {% empty %}
+  <div class="empty">No sales in the last 30 days yet.</div>
+  {% endfor %}
+</div>
+
+<div class="divider"><div class="line"></div><span class="title">Sales by staff, last 30 days</span><div class="line"></div></div>
+<div class="card">
+  {% for st in staff_sales %}
+  <div class="row">
+    <div><div style="font-weight:600;font-size:14px">{{ st.sold_by__username }}</div>
+    <div class="muted">{{ st.units }} items sold</div></div>
+    <strong style="color:var(--emerald-dark)">KSh {{ st.revenue|floatformat:0 }}</strong>
+  </div>
+  {% empty %}
+  <div class="empty">No staff sales recorded yet.</div>
+  {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+const daily = {{ daily_json|safe }};
+const weekly = {{ weekly_json|safe }};
+const opts = {
+  plugins:{legend:{display:false}},
+  scales:{y:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000)+'k':v}}}
+};
+new Chart(document.getElementById('dailyChart'),{type:'bar',
+  data:{labels:daily.map(d=>d.label),datasets:[{data:daily.map(d=>d.value),backgroundColor:'#0E5C4A',borderRadius:6}]},options:opts});
+new Chart(document.getElementById('weeklyChart'),{type:'bar',
+  data:{labels:weekly.map(d=>d.label),datasets:[{data:weekly.map(d=>d.value),backgroundColor:'#C9A227',borderRadius:6}]},options:opts});
+</script>
+{% endblock %}

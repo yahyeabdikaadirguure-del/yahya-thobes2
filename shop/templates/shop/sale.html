@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="card">
+  {% if has_products %}
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>Product</label>{{ form.product }}{{ form.product.errors }}
+    <label>Quantity</label>{{ form.qty }}{{ form.qty.errors }}
+    <label>Selling price (KSh){% if is_shopkeeper %} — leave blank to use list price{% endif %}</label>{{ form.selling_price }}{{ form.selling_price.errors }}
+    <label>Note (optional — e.g. customer name)</label>{{ form.note }}
+    <div style="margin-top:16px"><button class="btn" type="submit">Record sale</button></div>
+  </form>
+  {% else %}
+  <div class="empty">Add products in the Inventory tab first, then you can record sales here.</div>
+  {% endif %}
+</div>
+
+<div class="divider"><div class="line"></div><span class="title">Today</span><div class="line"></div></div>
+<div class="card">
+  {% for s in today_sales %}
+  <div class="row">
+    <span>{{ s.created_at|time:"H:i" }} · {{ s.name_snapshot }} × {{ s.qty }}{% if s.sold_by and is_shopkeeper %} · {{ s.sold_by.username }}{% endif %}</span>
+    <strong style="color:var(--emerald-dark)">KSh {{ s.total|floatformat:0 }}</strong>
+  </div>
+  {% empty %}
+  <div class="empty">No sales recorded today yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}
