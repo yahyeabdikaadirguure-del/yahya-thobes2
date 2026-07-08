@@ -2,14 +2,16 @@ from django.conf import settings
 from django.db import models
 
 CATEGORY_CHOICES = [(c, c) for c in [
-    "Kanzu / Thobe", "Abaya", "Hijab / Scarf", "Jalabiya",
-    "Prayer Wear", "Men's Accessories", "Kids", "Shoes", "Other",
+    "Kanzu / Thobe", "Khamis", "Jalabiya", "Shaal", "Cimaamad",
+    "Sali", "Kofiyado", "Tusbah", "Perfume", "Watches", "Rings",
+    "T-shirts", "Vest", "Surwal", "Men's Accessories", "Kids",
+    "Shoes", "Other",
 ]]
 
 GENERAL_SIZES = ["-", "XS", "S", "M", "L", "XL", "XXL", "Free size"]
 
-# Kids thobe: height only, 20 to 52 in steps of 2
-KIDS_SIZES = [str(h) for h in range(20, 53, 2)]
+# Height sizes (kids thobe & shaal): 20 to 60 in steps of 2
+KIDS_SIZES = [str(h) for h in range(20, 61, 2)]
 
 # Men thobe: height-width combinations
 _MEN_COMBOS = {
@@ -28,7 +30,7 @@ SHOE_SIZES = [f"Shoe {n}" for n in range(40, 47)]
 
 SIZE_CHOICES = [
     ("General", [(s, s) for s in GENERAL_SIZES]),
-    ("Kids thobe (height)", [(s, s) for s in KIDS_SIZES]),
+    ("Kids thobe & shaal (height)", [(s, s) for s in KIDS_SIZES]),
     ("Men thobe (height-width)", [(s, s) for s in MEN_SIZES]),
     ("Shoes", [(s, s) for s in SHOE_SIZES]),
 ]
