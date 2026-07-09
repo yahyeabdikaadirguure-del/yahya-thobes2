@@ -38,6 +38,9 @@
           {% if s.user.is_active %}Deactivate{% else %}Activate{% endif %}
         </button>
       </form>
+      <form method="post" action="{% url 'staff_delete' s.user.pk %}" style="display:inline">{% csrf_token %}
+        <button class="btn-danger" onclick="return confirm('Delete {{ s.user.username }} permanently? Their past sales will no longer show their name. For staff who left, Deactivate is usually better.')">Delete</button>
+      </form>
       {% endif %}
     </div>
   </div>

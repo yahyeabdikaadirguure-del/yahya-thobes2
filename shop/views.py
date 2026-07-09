@@ -307,3 +307,19 @@ def staff_toggle(request, pk):
         state = "activated" if user.is_active else "deactivated"
         messages.success(request, f"'{user.username}' {state}.")
     return redirect("staff_list")
+
+
+@login_required
+@admin_required
+@require_POST
+def staff_delete(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if user == request.user:
+        messages.error(request, "You cannot delete your own account.")
+    elif user.is_superuser:
+        messages.error(request, "Admin accounts cannot be deleted here.")
+    else:
+        name = user.username
+        user.delete()
+        messages.success(request, f"Deleted '{name}'. Their past sales are kept but no longer show their name.")
+    return redirect("staff_list")
