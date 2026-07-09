@@ -19,7 +19,7 @@
     {{ form.image }}{{ form.image.errors }}
     <div style="margin-top:16px;display:flex;gap:10px">
       <button class="btn" type="submit">Save product</button>
-      <a class="btn-ghost" href="{% url 'inventory' %}">Cancel</a>
+      {% if is_shopkeeper %}<a class="btn-ghost" href="{% url 'inventory' %}">Cancel</a>{% else %}<a class="btn-ghost" href="{% url 'dashboard' %}">Cancel</a>{% endif %}
     </div>
   </form>
 </div>

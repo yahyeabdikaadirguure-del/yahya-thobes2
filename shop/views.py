@@ -34,6 +34,14 @@ def _trend(current, previous):
 @login_required
 def dashboard(request):
     today = timezone.localdate()
+    if not _is_shopkeeper(request.user):
+        my_sales = Sale.objects.filter(created_at__date=today, sold_by=request.user)
+        return render(request, "shop/dashboard_cashier.html", {
+            "tab": "dashboard",
+            "my_sales": my_sales,
+            "my_total": _revenue(my_sales),
+            "my_count": my_sales.count(),
+        })
     week_start = today - timedelta(days=6)
     month_start = today - timedelta(days=29)
     sales = Sale.objects.all()
@@ -188,18 +196,20 @@ def inventory(request):
 
 
 @login_required
-@shopkeeper_required
 def product_create(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
             messages.success(request, f"Added {product}.")
-            return redirect("inventory")
+            if _is_shopkeeper(request.user):
+                return redirect("inventory")
+            return redirect("product_create")
     else:
         form = ProductForm()
+    tab = "inventory" if _is_shopkeeper(request.user) else "addproduct"
     return render(request, "shop/product_form.html",
-                  {"tab": "inventory", "form": form, "title": "New product"})
+                  {"tab": tab, "form": form, "title": "New product"})
 
 
 @login_required

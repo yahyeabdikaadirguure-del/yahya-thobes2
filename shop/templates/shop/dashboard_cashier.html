@@ -1,0 +1,31 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Your sales today</div>
+    <div class="stat-val">{{ my_count }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Your total today</div>
+    <div class="stat-val">KSh {{ my_total|floatformat:0 }}</div>
+  </div>
+</div>
+<div class="quick">
+  <a href="{% url 'record_sale' %}"><span>&#128722;</span>Record a sale</a>
+  <a href="{% url 'product_create' %}"><span>&#10133;</span>Add a product</a>
+</div>
+<div class="divider"><div class="line"></div><span class="title">Your sales today</span><div class="line"></div></div>
+<div class="card">
+  {% for s in my_sales %}
+  <div class="row">
+    <div>
+      <div style="font-weight:600;font-size:14px">{{ s.name_snapshot }} × {{ s.qty }}</div>
+      <div class="muted">{{ s.created_at|time:"H:i" }}{% if s.note %} · {{ s.note }}{% endif %}</div>
+    </div>
+    <strong style="color:var(--emerald-dark)">KSh {{ s.total|floatformat:0 }}</strong>
+  </div>
+  {% empty %}
+  <div class="empty">No sales yet today. Tap "Record a sale" to make your first one.</div>
+  {% endfor %}
+</div>
+{% endblock %}
