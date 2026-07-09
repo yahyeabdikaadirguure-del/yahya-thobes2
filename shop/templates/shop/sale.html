@@ -20,7 +20,15 @@
   {% for s in today_sales %}
   <div class="row">
     <span>{{ s.created_at|time:"H:i" }} · {{ s.name_snapshot }} × {{ s.qty }}{% if s.sold_by and is_shopkeeper %} · {{ s.sold_by.username }}{% endif %}</span>
-    <strong style="color:var(--emerald-dark)">KSh {{ s.total|floatformat:0 }}</strong>
+    <span style="display:flex;align-items:center;gap:8px">
+      <strong style="color:var(--emerald-dark)">KSh {{ s.total|floatformat:0 }}</strong>
+      {% if is_shopkeeper %}
+      <form method="post" action="{% url 'undo_sale' s.pk %}" style="display:inline">{% csrf_token %}
+        <input type="hidden" name="next" value="record_sale">
+        <button class="btn-danger" onclick="return confirm('Undo this sale and restore stock?')">Undo</button>
+      </form>
+      {% endif %}
+    </span>
   </div>
   {% empty %}
   <div class="empty">No sales recorded today yet.</div>
