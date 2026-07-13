@@ -27,6 +27,17 @@
 <div class="divider"><div class="line"></div><span class="title">Weekly totals, last 4 weeks</span><div class="line"></div></div>
 <div class="card"><canvas id="weeklyChart" height="120"></canvas></div>
 
+<div class="divider"><div class="line"></div><span class="title">This week, per item</span><div class="line"></div></div>
+<div class="card">
+  {% for it in week_items %}
+  <div class="row">
+    <div><div style="font-weight:600;font-size:14px">{{ it.name_snapshot }}</div>
+    <div class="muted">{{ it.units }} sold this week</div></div>
+    <strong style="color:var(--emerald-dark)">KSh {{ it.revenue|floatformat:0 }}</strong>
+  </div>
+  {% empty %}<div class="empty">No sales in the last 7 days.</div>{% endfor %}
+</div>
+
 <div class="divider"><div class="line"></div><span class="title">Top sellers, last 30 days</span><div class="line"></div></div>
 <div class="card">
   {% for t in top_sellers %}
@@ -44,7 +55,7 @@
 <div class="card">
   {% for st in staff_sales %}
   <div class="row">
-    <div><div style="font-weight:600;font-size:14px">{{ st.sold_by__username }}</div>
+    <div><div style="font-weight:600;font-size:14px"><a href="{% url 'staff_sales' st.sold_by %}" style="color:var(--emerald-dark);text-decoration:underline">{{ st.sold_by__username }}</a></div>
     <div class="muted">{{ st.units }} items sold</div></div>
     <strong style="color:var(--emerald-dark)">KSh {{ st.revenue|floatformat:0 }}</strong>
   </div>

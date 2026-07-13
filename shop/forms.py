@@ -21,6 +21,10 @@ class SaleForm(forms.Form):
         empty_label="Choose a product…",
     )
     qty = forms.IntegerField(min_value=1, initial=1, label="Quantity")
+    sale_date = forms.DateField(
+        required=False, label="Date of sale",
+        widget=forms.DateInput(attrs={"type": "date"}),
+    )
     selling_price = forms.DecimalField(
         min_value=0, max_digits=10, decimal_places=2, required=False,
         label="Selling price (KSh)",
@@ -43,6 +47,7 @@ class SaleForm(forms.Form):
             # and must enter the price the item actually sold for.
             self.fields["product"].label_from_instance = lambda p: str(p)
             self.fields["selling_price"].required = True
+            self.fields.pop("sale_date", None)  # cashiers cannot backdate
         for field in self.fields.values():
             field.widget.attrs.setdefault("class", "input")
 

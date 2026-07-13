@@ -6,6 +6,7 @@
     {{ form.non_field_errors }}
     <label>Product</label>{{ form.product }}{{ form.product.errors }}
     <label>Quantity</label>{{ form.qty }}{{ form.qty.errors }}
+    {% if is_shopkeeper %}<label>Date of sale (change only when entering an older sale)</label>{{ form.sale_date }}{% endif %}
     <label>Selling price (KSh){% if is_shopkeeper %} — leave blank to use list price{% endif %}</label>{{ form.selling_price }}{{ form.selling_price.errors }}
     <label>Note (optional — e.g. customer name)</label>{{ form.note }}
     <div style="margin-top:16px"><button class="btn" type="submit">Record sale</button></div>

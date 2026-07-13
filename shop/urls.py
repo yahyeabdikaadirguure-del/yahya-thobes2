@@ -15,4 +15,5 @@ urlpatterns = [
     path("staff/add/", views.staff_create, name="staff_create"),
     path("staff/<int:pk>/toggle/", views.staff_toggle, name="staff_toggle"),
     path("staff/<int:pk>/delete/", views.staff_delete, name="staff_delete"),
+    path("staff/<int:pk>/sales/", views.staff_sales_detail, name="staff_sales"),
 ]

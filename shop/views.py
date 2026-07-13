@@ -110,7 +110,7 @@ def insights(request):
 
     staff_sales = (
         Sale.objects.filter(created_at__date__gte=month_start, sold_by__isnull=False)
-        .values("sold_by__username")
+        .values("sold_by", "sold_by__username")
         .annotate(units=Sum("qty"), revenue=Sum("total"))
         .order_by("-revenue")
     )
@@ -125,6 +125,10 @@ def insights(request):
         "weekly_json": json.dumps(weekly),
         "top_sellers": top_sellers,
         "staff_sales": staff_sales,
+        "week_items": (Sale.objects.filter(created_at__date__gte=week_start)
+                       .values("name_snapshot")
+                       .annotate(units=Sum("qty"), revenue=Sum("total"))
+                       .order_by("-revenue")),
     }
     return render(request, "shop/insights.html", context)
 
@@ -140,7 +144,7 @@ def record_sale(request):
             price = form.cleaned_data.get("selling_price")
             if price is None:
                 price = product.price
-            Sale.objects.create(
+            sale = Sale.objects.create(
                 product=product,
                 sold_by=request.user,
                 name_snapshot=str(product),
@@ -149,6 +153,13 @@ def record_sale(request):
                 total=price * qty,
                 note=form.cleaned_data.get("note", ""),
             )
+            # Managers may backdate (e.g. entering yesterday's sales)
+            sale_date = form.cleaned_data.get("sale_date")
+            if is_manager and sale_date and sale_date != timezone.localdate():
+                current = timezone.localtime(sale.created_at)
+                sale.created_at = current.replace(
+                    year=sale_date.year, month=sale_date.month, day=sale_date.day)
+                sale.save(update_fields=["created_at"])
             product.stock -= qty
             product.save(update_fields=["stock"])
             messages.success(request, f"Sale recorded: {product} × {qty}.")
@@ -323,3 +334,28 @@ def staff_delete(request, pk):
         user.delete()
         messages.success(request, f"Deleted '{name}'. Their past sales are kept but no longer show their name.")
     return redirect("staff_list")
+
+
+@login_required
+@shopkeeper_required
+def staff_sales_detail(request, pk):
+    """One staff member: weekly totals per item plus every dated sale."""
+    member = get_object_or_404(User, pk=pk)
+    today = timezone.localdate()
+    weeks = []
+    for w in range(8):
+        start = today - timedelta(days=w * 7 + 6)
+        end = today - timedelta(days=w * 7)
+        qs = Sale.objects.filter(sold_by=member,
+                                 created_at__date__gte=start,
+                                 created_at__date__lte=end)
+        if not qs.exists():
+            continue
+        weeks.append({
+            "start": start, "end": end, "total": _revenue(qs),
+            "items": qs.values("name_snapshot").annotate(
+                units=Sum("qty"), revenue=Sum("total")).order_by("-revenue"),
+            "sales": qs.order_by("-created_at"),
+        })
+    return render(request, "shop/staff_sales.html",
+                  {"tab": "insights", "member": member, "weeks": weeks})
