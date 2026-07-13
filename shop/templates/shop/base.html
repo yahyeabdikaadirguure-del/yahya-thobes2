@@ -80,8 +80,6 @@ label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin:12p
     {% if is_shopkeeper %}
       <a href="{% url 'insights' %}" class="{% if tab == 'insights' %}active{% endif %}">Insights</a>
       <a href="{% url 'inventory' %}" class="{% if tab == 'inventory' %}active{% endif %}">Inventory</a>
-    {% else %}
-      <a href="{% url 'product_create' %}" class="{% if tab == 'addproduct' %}active{% endif %}">Add product</a>
     {% endif %}
     {% if is_admin %}<a href="{% url 'staff_list' %}" class="{% if tab == 'staff' %}active{% endif %}">Staff</a>{% endif %}
   </nav>

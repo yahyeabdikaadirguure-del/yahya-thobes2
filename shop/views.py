@@ -207,6 +207,7 @@ def inventory(request):
 
 
 @login_required
+@shopkeeper_required
 def product_create(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)

@@ -10,9 +10,8 @@
     <div class="stat-val">KSh {{ my_total|floatformat:0 }}</div>
   </div>
 </div>
-<div class="quick">
+<div class="quick" style="grid-template-columns:1fr">
   <a href="{% url 'record_sale' %}"><span>&#128722;</span>Record a sale</a>
-  <a href="{% url 'product_create' %}"><span>&#10133;</span>Add a product</a>
 </div>
 <div class="divider"><div class="line"></div><span class="title">Your sales today</span><div class="line"></div></div>
 <div class="card">
