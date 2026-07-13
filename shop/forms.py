@@ -47,7 +47,6 @@ class SaleForm(forms.Form):
             # and must enter the price the item actually sold for.
             self.fields["product"].label_from_instance = lambda p: str(p)
             self.fields["selling_price"].required = True
-            self.fields.pop("sale_date", None)  # cashiers cannot backdate
         for field in self.fields.values():
             field.widget.attrs.setdefault("class", "input")
 

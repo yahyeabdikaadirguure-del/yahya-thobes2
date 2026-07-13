@@ -153,9 +153,9 @@ def record_sale(request):
                 total=price * qty,
                 note=form.cleaned_data.get("note", ""),
             )
-            # Managers may backdate (e.g. entering yesterday's sales)
+            # Any staff may set the date (e.g. entering yesterday's sales)
             sale_date = form.cleaned_data.get("sale_date")
-            if is_manager and sale_date and sale_date != timezone.localdate():
+            if sale_date and sale_date != timezone.localdate():
                 current = timezone.localtime(sale.created_at)
                 sale.created_at = current.replace(
                     year=sale_date.year, month=sale_date.month, day=sale_date.day)
